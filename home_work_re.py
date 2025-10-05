@@ -25,12 +25,12 @@ def get_days_from_today(date: str) -> int:
     pattern = r"^(?:19|20)[0-9]{2}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12][0-9]|3[01])$"
     check_format = re.fullmatch(pattern=pattern, string=date)
     if not check_format:
-        raise ValueError("Date must be 'YYYY-MM-DD'") from e
+        raise ValueError("Date must be 'YYYY-MM-DD'")
     
     # but we cant handle 31 Feb :(
     # simpliest way to use try/except    
     try:
-        date_obj = datetime.strptime(date, "%Y-%m-%d")
+        date_obj = datetime.strptime(date, "%Y-%m-%d").date()
     except ValueError as e:
         raise ValueError("Date must be a valid calendar date") from e
 
@@ -84,7 +84,7 @@ def get_numbers_ticket(min_lottery: int, max_lottery: int, quantity: int) -> lis
         print("Quantity must not exceed range between min and max")
         parameters_is_good = False
     elif quantity < 1:
-        print("Quantity must be greater then 1")
+        print("Quantity must be at least 1")
         parameters_is_good = False
     
     # return empty list when we have troubles
@@ -124,7 +124,7 @@ def normalize_phone(phone_number: str) -> str:
 
     # remove all except digits
     phone_number = re.sub(r"[^0-9]","",phone_number)
-    if len(phone_number) == 12 and re.match("^380", phone_number):
+    if len(phone_number) == 12 and phone_number.startswith("380"):
         return "+" + phone_number
     elif len(phone_number) == 10:
         return "+38" + phone_number
